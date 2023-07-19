@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Project 1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="main-box">
+    <div class="box">
+      <form action="" id="my-form">
+        <h1>ADD User</h1>
+        <div id="er"></div><br>
+        <label for="name">Name:</label><br>
+        <input type="text" name="name" id="name" style="background-color:rgba(255, 255, 255, 0.4);"><br><br>
+        <label for="email">Email:</label><br>
+        <input type="email" name="email" id="email" style="background-color:rgba(255, 255, 255, 0.4);"><br><br>
+        <input type="submit" id="button" value="SUBMIT"
+          style="color: white; text-align: center; background-color: rgb(233, 107, 61); font-size: 16px;">
+      </form>
+    </div>
+    <h2>User Details is:</h2>
+    <!-- <div id="output"></div> -->
+    <table style="border: 2px solid red;">
+      <tr>
+        <th> Name</th>
+        <th> Email</th>
+        <th> Delete</th>
+        <th> Edit</th>
+      </tr>
+      <tbody id="user-table"></tbody>
+    </table>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
