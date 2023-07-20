@@ -19,7 +19,7 @@ function onSubmit(e) {
     }, 1000);
   } else {
     // Create table row and cells for user details
-    const row = document.createElement("tr");
+    let row = document.createElement("tr");
     const nameCell = document.createElement("td");
     const emailCell = document.createElement("td");
     const deleteCell = document.createElement("td");
@@ -49,7 +49,7 @@ function onSubmit(e) {
     //  Sending data on Cloud By axios
     axios
       .post(
-        "https://crudcrud.com/api/85a9e58aaac54be4be0630685c95f305/appointmentdata",
+        "https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata",
         obj
       )
       .then((result) => {
@@ -67,10 +67,45 @@ function onSubmit(e) {
       errorMsg.innerHTML = "";
     }, 1000);
 
-    // Add function on Delete Button.(only for display. actual do by Postman)
-    deleteButton.addEventListener("click", () => {
-      row.remove(); // Remove the row from the table
+    // Add function on Delete Button.(it also delete data from crudcrud)
+    deleteButton.addEventListener("click", (e) => {
+      row = e.target.parentElement.parentElement;
+     
+      const name = row.children[0].textContent;
+      findDataId().then((result) => {
+        const filteredAppointments = result.filter(
+          (eachrow) => eachrow.name === name
+        ); // The filter method iterates through each element in the result array and applies the callback function to each element. And return details as an array of that particular row which satisfy eachrow.name===name this condition.
+        const id = filteredAppointments[0]._id;
+        deletedetails(id);
+      });
+      row.remove();
     });
+
+     // function findDataId logic
+     function findDataId() {
+      return axios
+        .get(
+          "https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata"
+        )
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    // Function logic for deletedetails
+    function deletedetails(id) {
+      axios
+        .delete(
+          `https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata/${id}`
+        )
+        .then((res) => {
+          console.log("deleted !!");
+        });
+    }
 
     // clear details on refreshing
     nameInput.value = "";
@@ -78,10 +113,11 @@ function onSubmit(e) {
   }
 }
 
+//  GET data from crudcrud on reload page
 window.addEventListener("DOMContentLoaded", (event) => {
   axios
     .get(
-      "https://crudcrud.com/api/85a9e58aaac54be4be0630685c95f305/appointmentdata"
+      "https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata"
     )
     .then((result) => {
       // console.log(result);
@@ -112,20 +148,46 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
 });
 
-// Add function on button after getting by Cloud (But it only for display actually it not delete or edit in cloud. it is do by postman)
+// Add function on button after getting by Cloud
+
 userTable.addEventListener("click", (event) => {
   if (event.target.classList.contains("del")) {
     const data = event.target.parentElement.parentElement;
     if (event.target.textContent === "Delete") {
+      const name = data.children[0].textContent;
+      findDataId().then((result) => {
+        const filteredAppointments = result.filter(
+          (eachrow) => eachrow.name === name
+        ); // The filter method iterates through each element in the result array and applies the callback function to each element. And return details as an array of that particular row which satisfy eachrow.name===name this condition.
+        const id = filteredAppointments[0]._id;
+        deletedetails(id);
+      });
       data.remove();
-    } else if (event.target.textContent === "Edit") {
-      var newnam = prompt("Enter new Name", data.children[0].textContent);
-      var newemail = prompt("Enter new Email", data.children[1].textContent);
-
-      if (newnam !== "" && newnam !== null)
-        data.children[0].textContent = newnam;
-      if (newemail !== "" && newemail !== null)
-        data.children[1].textContent = newemail;
     }
   }
 });
+
+// function findDataId logic
+function findDataId() {
+  return axios
+    .get(
+      "https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata"
+    )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+// Function logic for deletedetails
+function deletedetails(id) {
+  axios
+    .delete(
+      `https://crudcrud.com/api/d962fb9361da4ca5a924f9d526bb8df5/appointmentdata/${id}`
+    )
+    .then((res) => {
+      console.log("deleted after loaded !!");
+    });
+}
