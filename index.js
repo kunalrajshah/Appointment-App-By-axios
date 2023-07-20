@@ -49,7 +49,7 @@ function onSubmit(e) {
     //  Sending data on Cloud By axios
     axios
       .post(
-        "https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata",
+        "https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata",
         obj
       )
       .then((result) => {
@@ -70,7 +70,7 @@ function onSubmit(e) {
     // Add function on Delete Button.(it also delete data from crudcrud)
     deleteButton.addEventListener("click", (e) => {
       row = e.target.parentElement.parentElement;
-     
+
       const name = row.children[0].textContent;
       findDataId().then((result) => {
         const filteredAppointments = result.filter(
@@ -82,11 +82,11 @@ function onSubmit(e) {
       row.remove();
     });
 
-     // function findDataId logic
-     function findDataId() {
+    // function findDataId logic
+    function findDataId() {
       return axios
         .get(
-          "https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata"
+          "https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata"
         )
         .then((res) => {
           return res.data;
@@ -100,31 +100,24 @@ function onSubmit(e) {
     function deletedetails(id) {
       axios
         .delete(
-          `https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata/${id}`
+          `https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata/${id}`
         )
         .then((res) => {
           console.log("deleted !!");
         });
     }
 
-    // // Add functinality on Edit Button
-    // editButton.addEventListener("click",(e)=>{
-      
-    // })
     // clear details on refreshing
     nameInput.value = "";
     emailInput.value = "";
   }
 }
 
-
-
-
 //  GET data from crudcrud on reload page
 window.addEventListener("DOMContentLoaded", (event) => {
   axios
     .get(
-      "https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata"
+      "https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata"
     )
     .then((result) => {
       // console.log(result);
@@ -162,6 +155,7 @@ userTable.addEventListener("click", (event) => {
     const data = event.target.parentElement.parentElement;
     if (event.target.textContent === "Delete") {
       const name = data.children[0].textContent;
+      const email = data.children[1].textContent;
       findDataId().then((result) => {
         const filteredAppointments = result.filter(
           (eachrow) => eachrow.name === name
@@ -170,6 +164,45 @@ userTable.addEventListener("click", (event) => {
         deletedetails(id);
       });
       data.remove();
+    } else if (event.target.textContent === "Edit") {
+      const data1 = event.target.parentElement.parentElement;
+
+      const name = data1.children[0].textContent;
+      const email = data.children[1].textContent;
+
+      // For getting ID whose details has to update
+      findDataId().then((result) => {
+        const filteredAppointments = result.filter(
+          (eachrow) => eachrow.name === name
+        ); // The filter method iterates through each element in the result array and applies the callback function to each element. And return details as an array of that particular row which satisfy eachrow.name===name this condition.
+        const id = filteredAppointments[0]._id;
+        updateDetails(id);
+        // Function for update details in crudcrud
+        function updateDetails(id) {
+          const nameprompt = prompt("Enter new name", name);
+          const emailprompt = prompt("Enter new email", email);
+
+          if (nameprompt !== "" && nameprompt !== null)
+            data1.children[0].textContent = nameprompt;
+          if (emailprompt !== "" && emailprompt !== null)
+            data.children[1].textContent = emailprompt;
+
+          axios
+            .put(
+              `https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata/${id}`,
+              {
+                name: nameprompt,
+                Email: emailprompt,
+              }
+            )
+            .then((res) => {
+              console.log("Data is Updated");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
     }
   }
 });
@@ -178,7 +211,7 @@ userTable.addEventListener("click", (event) => {
 function findDataId() {
   return axios
     .get(
-      "https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata"
+      "https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata"
     )
     .then((res) => {
       return res.data;
@@ -192,7 +225,7 @@ function findDataId() {
 function deletedetails(id) {
   axios
     .delete(
-      `https://crudcrud.com/api/00224b2f81fb46819d03ec40bc06926e/appointmentdata/${id}`
+      `https://crudcrud.com/api/b3d3bee7778a48d18149d25dfdd2f54e/appointmentdata/${id}`
     )
     .then((res) => {
       console.log("deleted after loaded !!");
